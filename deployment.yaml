@@ -1,0 +1,75 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: some-api-v1
+  labels:
+    some_key: some_value
+spec:
+  affinity: 
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution: # This part is about spreading pods througth nodes
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node_type
+            operator: In
+            values:
+            - node_type/node-1
+            - node_type/node-2
+            - node_type/node-3
+            - node_type/node-4
+            - node_type/node-5
+  replicas: 4 #desired replicas
+  revisionHistoryLimit: 2 #desired replicasets to keep
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: api
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations: 
+        blue_green_depoy_id: "1" # metadata for blue-green deployments
+      labels:
+        app.kubernetes.io/component: api
+        version: "some_version" # metadata for blue-green deployments
+    spec:
+      containers:
+        - name: api
+          image: some_image
+          imagePullPolicy: IfNotPresent
+          env:
+            some_key: some_value
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 3000
+              scheme: HTTP
+            initialDelaySeconds: 10 
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 3
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /health
+              port: 3000
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 3
+          resources:
+            requests:
+              memory: "128M"
+              cpu: "100m"
+            limits:
+              memory: "256M"
+              cpu: "500m"

@@ -1,0 +1,14 @@
+apiVersion: autoscaling/v1 #autoscaling  dependent on cpu usage
+kind: HorizontalPodAutoscaler
+metadata:
+  name: RELEASE-NAME
+  labels:
+    app: RELEASE-NAME-sentry
+spec:
+  scaleTargetRef:
+    kind: Deployment
+    apiVersion: apps/v1
+    name: RELEASE-NAME
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 65
