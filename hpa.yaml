@@ -3,7 +3,7 @@ kind: HorizontalPodAutoscaler
 metadata:
   name: RELEASE-NAME
   labels:
-    app: RELEASE-NAME-sentry
+    app: RELEASE-NAME
 spec:
   scaleTargetRef:
     kind: Deployment
