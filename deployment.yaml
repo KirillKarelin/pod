@@ -32,10 +32,10 @@ spec:
   template:
     metadata:
       annotations: 
-        blue_green_depoy_id: "1" # metadata for blue-green deployments
+        blue_green_depoy_id: "1" # metadata for possible blue-green deployments
       labels:
         app.kubernetes.io/component: api
-        version: "some_version" # metadata for blue-green deployments
+        version: "some_version" # metadata for possible blue-green deployments
     spec:
       containers:
         - name: api
